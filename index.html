@@ -29,14 +29,29 @@
 
 	var provider = 'twitter';
 	//Using popup (option 1)
-	res = OAuth.create(provider);
-	res.me().done(function(me) {
-	  alert('Hello ' + me.name);
-	}).fail(function(err) {
-	  //todo when the OAuth flow failed
-	  console.log(err);
-	});
+	OAuth.popup(provider)
+	.done(function(result) {
+	    result.me()
+	    .done(function (response) {
+	        console.log('Name: ', response.name);
+	        console.log(response.raw)
+	    })
+	    .fail(function (err) {
+	        //handle error with err
+	    });
 
+	    var url = 'https://api.twitter.com/1.1/friends/ids.json';
+	    result.get(url).done(function(data) {
+		  //todo with data
+		  console.log(data);
+		}).fail(function(err) {
+		  //todo with err
+		  console.log(err);
+		});
+	})
+	.fail(function (err) {
+	    //handle error with err
+	});
 </script>
 
 
