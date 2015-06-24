@@ -12,9 +12,12 @@
 <body>
 
 	<div id="container">
-	<div id="message">Hi, <span id="player1"></span>. These are all the people who don't follow you back:</div>
 	<button id="followlist">Identify your unrequited friendships</button>
-	<div id="result">
+	<div id="unrequited-result">
+		<div id="message">Hi, <span id="player1"></span>. These are all the twitterfolk who don't follow you back:</div>
+	</div>
+	<div id="mutual-result">
+		<div id="message">Hi, <span id="player1"></span>. These are all the twitterfolk who don't follow you back:</div>
 	</div>
 		
 	</div> <!-- container -->
@@ -85,12 +88,12 @@
 			}
 		}
 
-		var results = $('#result');
-		results.append('Mutual Friends: ' + mutual.length + '<br /> Unrequited Friends: ' + unrequited.length + '<br /><br />');
+		$("#message").prepend('Mutual Friends: ' + mutual.length + '<br /> Unrequited Friends: ' + unrequited.length + '<br /><br />');
 		
-		var users = $.extend(true, [], unrequited);
-		while(users.length) {
-			var chunk = users.splice(0,100);
+		var unrequitedResults = $('#unrequited-result');
+		var unrequitedUsers = $.extend(true, [], unrequited);
+		while(unrequitedUsers.length) {
+			var chunk = unrequitedUsers.splice(0,100);
 		    var url = 'https://api.twitter.com/1.1/users/lookup.json?user_id=' + chunk.toString();
 
 			twitterObj.get(url).done(function(data) {
@@ -98,12 +101,34 @@
 					var name = data[i].name;
 					var image = data[i].profile_image_url;
 					var sn = data[i].screen_name;
-					results.append( '<div class="user" target="' + name + '"><a href="https://twitter.com/' + sn + '" target="_blank"><img src="' + image + '" alt="' + name + '" /><span>' + name + '</span></a></div>');
+					unrequitedResults.append( '<div class="user" target="' + name + '"><a href="https://twitter.com/' + sn + '" target="_blank"><img src="' + image + '" alt="' + name + '" /><span>' + name + '</span></a></div>');
 				}
+				$("#message").show();
 			}).fail(function(err) {
 				console.log(err);
 			});
 		}
+
+
+		/**** if you want to see people who follow you back, uncomment below ***/
+		/*var mutualResults = $('#mutual-result');
+		var mutualUsers = $.extend(true, [], mutual);
+		while(mutualUsers.length) {
+			var chunk = mutualUsers.splice(0,100);
+		    var url = 'https://api.twitter.com/1.1/users/lookup.json?user_id=' + chunk.toString();
+
+			twitterObj.get(url).done(function(data) {
+				for (var i=0, l=data.length; i<l; i++){
+					var name = data[i].name;
+					var image = data[i].profile_image_url;
+					var sn = data[i].screen_name;
+					mutualResults.append( '<div class="user" target="' + name + '"><a href="https://twitter.com/' + sn + '" target="_blank"><img src="' + image + '" alt="' + name + '" /><span>' + name + '</span></a></div>');
+				}
+				$("#message").show();
+			}).fail(function(err) {
+				console.log(err);
+			});
+		}*/
 	}
 
 	
