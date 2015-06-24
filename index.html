@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>YUNOFOLLOW?!@#$#@@?</title>
+
+<link type="text/css" href="styles/reset.css" rel="stylesheet" />
+<script src="scripts/dist/oauth.js"></script>
+
+<style>
+	
+
+</style>
+
+<body>
+
+	<div id="container">
+		
+	</div> <!-- container -->
+
+</body>
+
+
+<!--<script src="https://ajax.googleapis.com/ajax/libs/jquery/2.1.4/jquery.min.js"></script>-->
+<script src="scripts/jquery-2.1.4.min.js"></script>
+
+<script>	
+
+	OAuth.initialize('DLYFN4FOXoXmYZ3fzwI6dMixDlc');
+
+	var provider = 'twitter';
+	//Using popup (option 1)
+	res = OAuth.create(provider);
+	res.me().done(function(me) {
+	  alert('Hello ' + me.name);
+	}).fail(function(err) {
+	  //todo when the OAuth flow failed
+	  console.log(err);
+	});
+
+</script>
+
+
+
+<script>
+
+	$(document).ready(function(){
+	    
+  	});
+
+
+
+</script>
+
+</html>
