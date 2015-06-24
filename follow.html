@@ -1,21 +1,19 @@
 <!DOCTYPE html>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>YUNOFOLLOW?!@#$#@@?</title>
+<title>Unrequited Friendships</title>
 
 <link type="text/css" href="styles/reset.css" rel="stylesheet" />
+<link type="text/css" href="styles/style.css" rel="stylesheet" />
 <script src="scripts/dist/oauth.js"></script>
 
-<style>
-	
 
-</style>
 
 <body>
 
 	<div id="container">
-	<button id="followlist"> who no follow?</button>
-	<p>You: <span id="player1"></span></p>
+	<div id="message">Hi, <span id="player1"></span>. These are all the people who don't follow you back:</div>
+	<button id="followlist">Identify your unrequited friendships</button>
 	<div id="result">
 	</div>
 		
@@ -100,7 +98,7 @@
 					var name = data[i].name;
 					var image = data[i].profile_image_url;
 					var sn = data[i].screen_name;
-					results.append( '<a href="https://twitter.com/' + sn + '" target="_blank"><img src="' + image + '" alt="' + name + '" />' + name + '</a>' + '<br />');
+					results.append( '<div class="user" target="' + name + '"><a href="https://twitter.com/' + sn + '" target="_blank"><img src="' + image + '" alt="' + name + '" /><span>' + name + '</span></a></div>');
 				}
 			}).fail(function(err) {
 				console.log(err);
@@ -108,7 +106,7 @@
 		}
 	}
 
-
+	
 	 
 </script>
 
