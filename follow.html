@@ -1,0 +1,127 @@
+<!DOCTYPE html>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>YUNOFOLLOW?!@#$#@@?</title>
+
+<link type="text/css" href="styles/reset.css" rel="stylesheet" />
+<script src="scripts/dist/oauth.js"></script>
+
+<style>
+	
+
+</style>
+
+<body>
+
+	<div id="container">
+	<button id="followlist"> who no follow?</button>
+	<p>You: <span id="player1"></span></p>
+	<div id="result">
+	</div>
+		
+	</div> <!-- container -->
+
+</body>
+
+
+<!--<script src="https://ajax.googleapis.com/ajax/libs/jquery/2.1.4/jquery.min.js"></script>-->
+<script src="scripts/jquery-2.1.4.min.js"></script>
+
+<script>	
+
+	OAuth.initialize('DLYFN4FOXoXmYZ3fzwI6dMixDlc');
+	var provider = 'twitter';
+	var twitterObj;
+	var friendsIDs;
+	var followersIDs;
+	var mutual = [];
+	var unrequited = [];
+
+
+	OAuth.popup(provider)
+	.done(function(result) {
+		twitterObj= result;
+		twitterObj.me()
+	    .done(function (response) {
+	    	$('#player1').text(response.name);
+	        console.log('Name: ', response.name);
+	        console.log(response.raw)
+	    })
+	    .fail(function (err) {
+	        console.log('i dont know you');
+	    });
+	})
+	.fail(function (err) {
+	    console.log('y u no work?');
+	});
+
+	$('#followlist').click(function(){
+		
+		var friendsURL = 'https://api.twitter.com/1.1/friends/ids.json';
+	    twitterObj.get(friendsURL).done(function(data) {
+			friendsIDs = data.ids;
+
+			var followersURL = 'https://api.twitter.com/1.1/followers/ids.json';
+			twitterObj.get(followersURL).done(function(data) {
+				followersIDs = data.ids;
+
+				compareLists();
+			}).fail(function(err) {
+				console.log(err);
+			});
+
+		}).fail(function(err) {
+		  console.log(err);
+		});
+		
+	});
+
+	function compareLists(){
+
+		for (var i=0, l=friendsIDs.length; i<l; i++) {
+			var friend = friendsIDs[i];
+			if( (jQuery.inArray( friend, followersIDs )) > -1 ) {
+				mutual.push(friend);
+			} else {
+				unrequited.push(friend);
+			}
+		}
+
+		var results = $('#result');
+		results.append('Mutual Friends: ' + mutual.length + '<br /> Unrequited Friends: ' + unrequited.length + '<br /><br />');
+		
+		var users = $.extend(true, [], unrequited);
+		while(users.length) {
+			var chunk = users.splice(0,100);
+		    var url = 'https://api.twitter.com/1.1/users/lookup.json?user_id=' + chunk.toString();
+
+			twitterObj.get(url).done(function(data) {
+				for (var i=0, l=data.length; i<l; i++){
+					var name = data[i].name;
+					var image = data[i].profile_image_url;
+					var sn = data[i].screen_name;
+					results.append( '<a href="https://twitter.com/' + sn + '" target="_blank"><img src="' + image + '" alt="' + name + '" />' + name + '</a>' + '<br />');
+				}
+			}).fail(function(err) {
+				console.log(err);
+			});
+		}
+	}
+
+
+	 
+</script>
+
+
+
+<script>
+
+	$(document).ready(function(){
+	    
+  	});
+
+
+
+</script>
+
+</html>
