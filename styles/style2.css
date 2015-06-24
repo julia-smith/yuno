@@ -1,0 +1,52 @@
+#container{
+	width:80%;
+	margin: auto;
+	position: relative;
+}
+#ids{
+	width:100%;
+	position: relative;
+	height: 50px;
+	display: block;
+}
+h1{
+	background-color: #bada55;
+	color:white;
+	text-align: center;
+	margin: auto;
+	padding:30px;
+	margin-bottom: 30px;
+	font-size: 2em;
+}
+h2{
+	color: #bada55;
+	font-size: 1.5em;
+	text-align: center;
+}
+#users{
+	  display: block;
+  position: relative;
+  height: 100px;
+}
+
+#p1, #p2, #user1, #user2{
+	position: absolute;
+}
+#p2, #user2{
+	right:0;
+	text-align: right;
+}
+#p1, #user1{
+	left:0;
+}
+button{
+	width:50%;
+	margin: auto;
+	background-color: #bada55;
+	color:white;
+	display: block;
+	  border: none;
+  font-size: 1.2em;
+  padding: 10px 0;
+  margin-bottom: 20px;
+}

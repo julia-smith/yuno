@@ -7,18 +7,21 @@
 <script src="scripts/dist/oauth.js"></script>
 <script src="scripts/dist/underscore-min.js"></script>
 
-<style>
-	
-
-</style>
+	<link type="text/css" href="styles/reset.css" rel="stylesheet" />
+	<link type="text/css" href="styles/style.css" rel="stylesheet" />
+	<link type="text/css" href="styles/style2.css" rel="stylesheet" />
 
 <body>
-
+	
 	<div id="container">
-	<p>Player 1: <span id="player1"></span></p>
-	<p>Player 2 <input id="player2"type="text"></input></p>
-	<button id="compare">Get common friends</button>
+	<h1>Find your mutual friends</h1>
+	<div id='ids'>
+		<p id='p1'>Player 1: <span id="player1"></span></p>
+		<p id='p2'>Player 2: <input id="player2"type="text"></input></p>
+	</div>
+	<button id="compare">Let's go!</button>
 	<div id="result">
+	 <div id="users"></div>
 	</div>
 		
 	</div> <!-- container -->
@@ -33,7 +36,7 @@
 
 	OAuth.initialize('DLYFN4FOXoXmYZ3fzwI6dMixDlc');
 	var provider = 'twitter';
-	var me = {};
+	var me = {}, them={};
 
 	var twitterObj;
 	OAuth.popup(provider)
@@ -43,8 +46,7 @@
 	    .done(function (response) {
 	    	$('#player1').text(response.name);
 	    	me.name = response.name;
-	        console.log('Name: ', response.name);
-	        console.log(response.raw)
+	    	me.user = response;
 	    })
 	    .fail(function (err) {
 	        console.log('i dont know you');
@@ -67,8 +69,8 @@
 
 	$('#compare').click(function(){
 		var player2 = $('#player2').val();
-		them = {};
-		lookupUser(them,player2);
+		lookupUser(them, player2);
+		lookupUser(me, me.user.id);
 		getfriends(me);
 		getfollowers(me);
 		getfaves(me);
@@ -82,8 +84,9 @@
 		showuserdeets(me, 'user1');
 		showuserdeets(them, 'user2');
 		var commonFriends = getintersection(me.friends.ids, them.friends.ids);
-		$('#result').append('<p>Friends in common:'+ commonFriends.length +'</p>')
-		var $frienddiv= $('#result').append('<div>').attr('id','commonFriends');
+		$('#result').append('<h2>Friends in common:'+ commonFriends.length +'</h2>')
+		$('#result').append($('<div>').attr('id','commonFriends'));
+		var $frienddiv= $('#commonFriends');
 		while(commonFriends.length) {
 			var chunk = commonFriends.splice(0,100);
 		    var url = 'https://api.twitter.com/1.1/users/lookup.json?user_id=' + chunk.toString();
@@ -93,7 +96,7 @@
 					var name = data[i].name;
 					var image = data[i].profile_image_url;
 					var sn = data[i].screen_name;
-					$frienddiv.append( '<a href="https://twitter.com/' + sn + '" target="_blank"><img src="' + image + '" alt="' + name + '" />' + name + '</a>' + '<br />');
+					$frienddiv.append( '<div class="user" target="' + name + '"><a href="https://twitter.com/' + sn + '" target="_blank"><img src="' + image + '" alt="' + name + '" /><span>' + name + '</span></a></div>');
 				}
 			}).fail(function(err) {
 				console.log(err);
@@ -102,12 +105,12 @@
 	}
 
 	var showuserdeets = function(user, id){
-		var $userdiv = $('<div>').attr('id',id).addClass('user');
-		$userdiv.append('<p>'+user.name+'</p>');
-		$userdiv.append('<p>'+user.followers.ids.length+' followers</p>');
-		$userdiv.append('<p>'+user.friends.ids.length+' friends</p>');
+		var $userdiv = $('<div>').attr('id',id);
+		$userdiv.append('<h3>'+user.name+'</h3>');
+		$userdiv.append('<p>'+user.user.followers_count+' followers</p>');
+		$userdiv.append('<p>'+user.friends_count+' friends</p>');
 		$userdiv.append('<p> Last favorite: '+user.faves[0].text+'</p>');
-		$('#result').append($userdiv);
+		$('#users').append($userdiv);
 	}
 
 	var getfriends = function( userobj, username){
@@ -135,7 +138,8 @@
 	var lookupUser = function(userobj, id){
 		var url = 'https://api.twitter.com/1.1/users/lookup.json?screen_name=' + id;
 		twitterObj.get(url).done(function(data) {
-		  userobj.name = data.name;
+		  userobj.name = data[0].name;
+		  userobj.user = data[0];
 		});
 	}
 
