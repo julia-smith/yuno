@@ -14,6 +14,7 @@
 <body>
 
 	<div id="container">
+	<button id="followlist"> who no follow?</button>
 		
 	</div> <!-- container -->
 
@@ -26,12 +27,21 @@
 <script>	
 
 	OAuth.initialize('DLYFN4FOXoXmYZ3fzwI6dMixDlc');
-
 	var provider = 'twitter';
-	//Using popup (option 1)
+
+	var twitterObj;
+
+
 	OAuth.popup(provider)
 	.done(function(result) {
-	    result.me()
+		twitterObj= result;
+	})
+	.fail(function (err) {
+	    console.log('y u no work?');
+	});
+
+	$('#followlist').click(function(){
+		 twitterObj.me()
 	    .done(function (response) {
 	        console.log('Name: ', response.name);
 	        console.log(response.raw)
@@ -41,7 +51,7 @@
 	    });
 
 	    var url = 'https://api.twitter.com/1.1/friends/ids.json';
-	    result.get(url).done(function(data) {
+	    twitterObj.get(url).done(function(data) {
 		  //todo with data
 		  console.log(data);
 		}).fail(function(err) {
@@ -49,9 +59,9 @@
 		  console.log(err);
 		});
 	})
-	.fail(function (err) {
-	    //handle error with err
-	});
+
+
+	 
 </script>
 
 
