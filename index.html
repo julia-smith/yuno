@@ -5,6 +5,7 @@
 
 <link type="text/css" href="styles/reset.css" rel="stylesheet" />
 <script src="scripts/dist/oauth.js"></script>
+<script src="scripts/dist/underscore-min.js"></script>
 
 <style>
 	
@@ -14,9 +15,9 @@
 <body>
 
 	<div id="container">
-	<button id="followlist"> who no follow?</button>
-	<p> Player 1: <span id="player1"></span></p>
+	<p>Player 1: <span id="player1"></span></p>
 	<p>Player 2 <input id="player2"type="text"></input></p>
+	<button id="compare">Get common friends</button>
 	<div id="result">
 	</div>
 		
@@ -32,6 +33,7 @@
 
 	OAuth.initialize('DLYFN4FOXoXmYZ3fzwI6dMixDlc');
 	var provider = 'twitter';
+	var me = {};
 
 	var twitterObj;
 	OAuth.popup(provider)
@@ -40,6 +42,7 @@
 		 twitterObj.me()
 	    .done(function (response) {
 	    	$('#player1').text(response.name);
+	    	me.name = response.name;
 	        console.log('Name: ', response.name);
 	        console.log(response.raw)
 	    })
@@ -52,9 +55,7 @@
 	});
 
 	$('#followlist').click(function(){
-
-
-	    var url = 'https://api.twitter.com/1.1/friends/ids.json';
+		var url = 'https://api.twitter.com/1.1/friends/ids.json';
 	    twitterObj.get(url).done(function(data) {
 		  //todo with data
 		  console.log(data);
@@ -63,6 +64,85 @@
 		  console.log(err);
 		});
 	});
+
+	$('#compare').click(function(){
+		var player2 = $('#player2').val();
+		them = {};
+		lookupUser(them,player2);
+		getfriends(me);
+		getfollowers(me);
+		getfaves(me);
+		getfriends(them, player2);
+		getfollowers(them, player2);
+		getfaves(them, player2);
+		setTimeout(displayresults, 5000); 
+	});
+
+	var displayresults = function(){
+		showuserdeets(me, 'user1');
+		showuserdeets(them, 'user2');
+		var commonFriends = getintersection(me.friends.ids, them.friends.ids);
+		$('#result').append('<p>Friends in common:'+ commonFriends.length +'</p>')
+		var $frienddiv= $('#result').append('<div>').attr('id','commonFriends');
+		while(commonFriends.length) {
+			var chunk = commonFriends.splice(0,100);
+		    var url = 'https://api.twitter.com/1.1/users/lookup.json?user_id=' + chunk.toString();
+
+			twitterObj.get(url).done(function(data) {
+				for (var i=0, l=data.length; i<l; i++){
+					var name = data[i].name;
+					var image = data[i].profile_image_url;
+					var sn = data[i].screen_name;
+					$frienddiv.append( '<a href="https://twitter.com/' + sn + '" target="_blank"><img src="' + image + '" alt="' + name + '" />' + name + '</a>' + '<br />');
+				}
+			}).fail(function(err) {
+				console.log(err);
+			});
+		}
+	}
+
+	var showuserdeets = function(user, id){
+		var $userdiv = $('<div>').attr('id',id).addClass('user');
+		$userdiv.append('<p>'+user.name+'</p>');
+		$userdiv.append('<p>'+user.followers.ids.length+' followers</p>');
+		$userdiv.append('<p>'+user.friends.ids.length+' friends</p>');
+		$userdiv.append('<p> Last favorite: '+user.faves[0].text+'</p>');
+		$('#result').append($userdiv);
+	}
+
+	var getfriends = function( userobj, username){
+		var url = 'https://api.twitter.com/1.1/friends/ids.json';
+		url = username? url +'?screen_name=' + username: url;
+		twitterObj.get(url).done(function(data) {
+		  userobj.friends = data;
+		});
+	}
+	var getfollowers = function( userobj, username){
+		var url = 'https://api.twitter.com/1.1/followers/ids.json';
+		url = username? url +'?screen_name=' + username : url;
+		twitterObj.get(url).done(function(data) {
+		  userobj.followers = data;
+		});
+	}
+	var getfaves = function( userobj, username){
+		var url = 'https://api.twitter.com/1.1/favorites/list.json';
+		url = username? url +'?screen_name=' + username: url;
+		twitterObj.get(url).done(function(data) {
+		  userobj.faves = data;
+		});
+	}
+
+	var lookupUser = function(userobj, id){
+		var url = 'https://api.twitter.com/1.1/users/lookup.json?screen_name=' + id;
+		twitterObj.get(url).done(function(data) {
+		  userobj.name = data.name;
+		});
+	}
+
+	var getintersection = function(arr1, arr2){
+		return _.intersection(arr1,arr2);
+	}
+
 
 
 	 
