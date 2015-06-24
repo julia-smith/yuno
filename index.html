@@ -15,6 +15,10 @@
 
 	<div id="container">
 	<button id="followlist"> who no follow?</button>
+	<p> Player 1: <span id="player1"></span></p>
+	<p>Player 2 <input id="player2"type="text"></input></p>
+	<div id="result">
+	</div>
 		
 	</div> <!-- container -->
 
@@ -30,25 +34,25 @@
 	var provider = 'twitter';
 
 	var twitterObj;
-
-
 	OAuth.popup(provider)
 	.done(function(result) {
 		twitterObj= result;
+		 twitterObj.me()
+	    .done(function (response) {
+	    	$('#player1').text(response.name);
+	        console.log('Name: ', response.name);
+	        console.log(response.raw)
+	    })
+	    .fail(function (err) {
+	        console.log('i dont know you');
+	    });
 	})
 	.fail(function (err) {
 	    console.log('y u no work?');
 	});
 
 	$('#followlist').click(function(){
-		 twitterObj.me()
-	    .done(function (response) {
-	        console.log('Name: ', response.name);
-	        console.log(response.raw)
-	    })
-	    .fail(function (err) {
-	        //handle error with err
-	    });
+
 
 	    var url = 'https://api.twitter.com/1.1/friends/ids.json';
 	    twitterObj.get(url).done(function(data) {
@@ -58,7 +62,7 @@
 		  //todo with err
 		  console.log(err);
 		});
-	})
+	});
 
 
 	 
