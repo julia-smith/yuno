@@ -107,7 +107,7 @@
 		var $userdiv = $('<div>').attr('id',id);
 		$userdiv.append('<h3>'+user.name+'</h3>');
 		$userdiv.append('<p>'+user.user.followers_count+' followers</p>');
-		$userdiv.append('<p>'+user.friends_count+' friends</p>');
+		$userdiv.append('<p>'+user.user.friends_count+' friends</p>');
 		$userdiv.append('<p> Last favorite: '+user.faves[0].text+'</p>');
 		$('#users').append($userdiv);
 	}
