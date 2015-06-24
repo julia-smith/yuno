@@ -12,8 +12,8 @@
 <body>
 
 	<div id="container">
-	<div id="message">Hi, <span id="player1"></span>. These are all the people who don't follow you back:</div>
 	<button id="followlist">Identify your unrequited friendships</button>
+	<div id="message">Hi, <span id="player1"></span>. These are all the twitterfolk who don't follow you back:</div>
 	<div id="result">
 	</div>
 		
@@ -86,7 +86,7 @@
 		}
 
 		var results = $('#result');
-		results.append('Mutual Friends: ' + mutual.length + '<br /> Unrequited Friends: ' + unrequited.length + '<br /><br />');
+		$("#message").prepend('Mutual Friends: ' + mutual.length + '<br /> Unrequited Friends: ' + unrequited.length + '<br /><br />');
 		
 		var users = $.extend(true, [], unrequited);
 		while(users.length) {
@@ -100,6 +100,7 @@
 					var sn = data[i].screen_name;
 					results.append( '<div class="user" target="' + name + '"><a href="https://twitter.com/' + sn + '" target="_blank"><img src="' + image + '" alt="' + name + '" /><span>' + name + '</span></a></div>');
 				}
+				$("#message").show();
 			}).fail(function(err) {
 				console.log(err);
 			});
