@@ -3,6 +3,16 @@
 	margin: auto;
 	position: relative;
 }
+.user {
+	float:left;
+}
+.user span {
+	display:none;
+}
+.user a {
+	line-height: 0;
+ 	float: left;
+}
 #ids{
 	width:100%;
 	position: relative;

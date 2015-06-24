@@ -8,7 +8,6 @@
 <script src="scripts/dist/underscore-min.js"></script>
 
 	<link type="text/css" href="styles/reset.css" rel="stylesheet" />
-	<link type="text/css" href="styles/style.css" rel="stylesheet" />
 	<link type="text/css" href="styles/style2.css" rel="stylesheet" />
 
 <body>
@@ -70,7 +69,7 @@
 	$('#compare').click(function(){
 		var player2 = $('#player2').val();
 		lookupUser(them, player2);
-		lookupUser(me, me.user.id);
+		lookupUser(me, me.user.alias);
 		getfriends(me);
 		getfollowers(me);
 		getfaves(me);
